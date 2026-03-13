@@ -121,11 +121,7 @@ def main() -> None:
         logger.warning("Недостаточно данных для формирования отчёта.")
         return
 
-    print(
-        tabulate.tabulate(
-            result, headers="keys", tablefmt="rounded_grid", numalign="right"
-        )
-    )
+    print(render_table(result))
 
 
 if __name__ == "__main__":
