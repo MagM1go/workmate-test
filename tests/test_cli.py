@@ -10,7 +10,7 @@ def test_create_parser_valid_args():
     parser = create_parser()
     args = parser.parse_args(["--files", "test.csv", "--report", "median-coffee"])
 
-    assert args.report == ["median-coffee"]
+    assert args.report == "median-coffee"
     assert Path("test.csv") in args.files
 
 
