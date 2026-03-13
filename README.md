@@ -55,6 +55,7 @@ uv run python -m reporter --files input/math.csv --report median-coffee
 ```
 ---
 # Структура
+```
 ├── input
 │   ├── math.csv
 │   ├── physics.csv
@@ -81,6 +82,8 @@ uv run python -m reporter --files input/math.csv --report median-coffee
 │           └── __init__.py
 ├── tests
 └── uv.lock
+```
+
 ---
 # Объясняюсь!
 Для начала, использовал src-layout, просто потому что он мне привычнее и больше нравится.
