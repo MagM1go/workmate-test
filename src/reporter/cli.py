@@ -60,8 +60,8 @@ def create_parser() -> argparse.ArgumentParser:
         "-r",
         type=str,
         required=True,
-        choices=REPORT_CATEGORIES.keys(),  # Авто-валидация и подсказки в --help
-        help="Название отчёта (можно указать несколько через пробел)",
+        choices=REPORT_CATEGORIES.keys(),
+        help="Тип отчёта",
     )
 
     return parser
