@@ -22,11 +22,9 @@ class DataReader:
     def __init__(self, repository: BaseRepository) -> None:
         self._repository = repository
 
-    def read(self, source: Path) -> list[StudentRecord]:
-        data = self._repository.get_source_data(source=source)
-
-        return [
-            StudentRecord(
+    def _to_student_record(self, model: dict[str, str]) -> StudentRecord:
+        try:
+            return StudentRecord(
                 student=model["student"],
                 date=date.fromisoformat(model["date"]),
                 coffee_spent=int(model["coffee_spent"]),
@@ -35,5 +33,9 @@ class DataReader:
                 mood=model["mood"],
                 exam=model["exam"],
             )
-            for model in data
-        ]
+        except (KeyError, ValueError) as e:
+            raise ValueError(f"Некорректная строка данных: {model}") from e
+
+    def read(self, source: Path) -> list[StudentRecord]:
+        data = self._repository.get_source_data(source=source)
+        return [self._to_student_record(model) for model in data]

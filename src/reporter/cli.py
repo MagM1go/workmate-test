@@ -74,31 +74,51 @@ def validate_files(files: list[Path]) -> None:
             sys.exit(1)
 
 
+def generate_report(
+    files: list[Path], report_name: str
+) -> list[dict[str, str | float]]:
+    rows: list[StudentRecord] = []
+
+    for file in files:
+        reader = DataReader(get_repository_for_file(file))
+        rows.extend(reader.read(file))
+
+    if not rows:
+        return []
+
+    strategy = REPORT_CATEGORIES[report_name]()
+    return strategy.create(rows)
+
+
+def render_table(result: list[dict[str, str | float]]) -> str:
+    return tabulate.tabulate(
+        result,
+        headers="keys",
+        tablefmt="rounded_grid",
+        numalign="right",
+    )
+
+
 def main() -> None:
     parser = create_parser()
     args = parser.parse_args()
 
     validate_files(args.files)
 
-    rows: list[StudentRecord] = []
-
     try:
-        for file in args.files:
-            reader = DataReader(get_repository_for_file(file))
-            rows.extend(reader.read(file))
+        result = generate_report(args.files, args.report)
+    except ValueError as e:
+        logger.error(f"Ошибка данных: {e}")
+        sys.exit(1)
+    except OSError as e:
+        logger.error(f"Ошибка чтения файла: {e}")
+        sys.exit(1)
     except Exception as e:
-        logger.error(f"Критическая ошибка при чтении данных: {e}")
+        logger.error(f"Непредвиденная ошибка: {e}")
         sys.exit(1)
 
-    if not rows:
-        logger.warning("Файлы пусты или не содержат валидных данных.")
-        return
-
-    strategy = REPORT_CATEGORIES[args.report]()
-    result = strategy.create(rows)
-
     if not result:
-        logger.error("Данные для формирования этого отчёта отсутствуют.")
+        logger.warning("Недостаточно данных для формирования отчёта.")
         return
 
     print(
