@@ -94,19 +94,18 @@ def main() -> None:
         logger.warning("Файлы пусты или не содержат валидных данных.")
         return
 
-    for report_name in args.report:
-        strategy = REPORT_CATEGORIES[report_name]()
-        result = strategy.create(rows)
+    strategy = REPORT_CATEGORIES[args.report]()
+    result = strategy.create(rows)
 
-        if not result:
-            print("Данные для формирования этого отчёта отсутствуют.")
-            continue
+    if not result:
+        logger.error("Данные для формирования этого отчёта отсутствуют.")
+        return
 
-        print(
-            tabulate.tabulate(
-                result, headers="keys", tablefmt="rounded_grid", numalign="right"
-            )
+    print(
+        tabulate.tabulate(
+            result, headers="keys", tablefmt="rounded_grid", numalign="right"
         )
+    )
 
 
 if __name__ == "__main__":
