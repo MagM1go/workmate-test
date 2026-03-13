@@ -58,7 +58,6 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--report",
         "-r",
-        nargs="+",
         type=str,
         required=True,
         choices=REPORT_CATEGORIES.keys(),  # Авто-валидация и подсказки в --help
